@@ -1,19 +1,22 @@
 import { validateJwt } from "https://deno.land/x/djwt/validate.ts";
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-const key = config().SECRET;
+const key = config().SECRET ?? 'ebcf221a85be7f9f3866c9925286e6be';
 
 const authMiddleware = async({request, response}: {request: any, response:any}, next: any) => {
-    const header = request.headers.authorization;
-    if (!header)
-        response.status = 401;
+
+    const authorization = request.headers.get("authorization");
+    if (!authorization)
+        response.status = 405;
         response.body = { message: "No token provided" }
 
-    const parts = header.split(" ");
+    const parts = authorization.split(" ");
 
-    if (parts.length !== 2)
-    response.status = 401;
-    response.body = { message: "Invalid Token" }
+    if (parts.length != 2)
+    {
+        response.body = { message: "Invalid Token" }
+        response.status = 405;
+    }
 
     const jwt = parts[1];
 
@@ -22,7 +25,7 @@ const authMiddleware = async({request, response}: {request: any, response:any}, 
         return;
     }
     else{
-        response.status = 401;
+        response.status = 405;
         response.body = { message: "Invalid Token" }
     }
 }

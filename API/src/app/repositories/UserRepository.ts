@@ -1,5 +1,5 @@
 import db from '../../database/mongo.ts';
-import { User } from '../models/Users.ts';
+import { User } from '../models/User.ts';
 const users = db.collection('Users');
 
 const Register = async (user: User) => {
@@ -7,8 +7,15 @@ const Register = async (user: User) => {
 }
 
 const FindByEmail = async(email: string) => {
-    var user: User = await users.findOne({email:email});
-    return user;
+    return await users.findOne({ email: email });
 }
 
-export { Register, FindByEmail };
+const Update = async (user: User, id: string) => {
+    return await users.updateOne({_id: id}, user)
+}
+
+const GetAllUsers = async () => {
+    return await users.find();
+}
+
+export { Register, FindByEmail, Update, GetAllUsers };

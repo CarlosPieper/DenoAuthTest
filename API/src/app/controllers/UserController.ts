@@ -1,5 +1,6 @@
 import { User } from '../models/User.ts';
 import { Register, FindByEmail, Update, GetAllUsers } from '../repositories/UserRepository.ts';
+import { GetAllCategories } from '../repositories/CategoryRepository.ts';
 import { compareSync, hashSync } from "https://deno.land/x/bcrypt@v0.2.1/mod.ts";
 import { makeJwt, setExpiration, Jose, Payload } from "https://deno.land/x/djwt@v0.9.0/create.ts";
 import { config } from "https://deno.land/x/dotenv/mod.ts";
@@ -65,6 +66,8 @@ const login = async (
 
   const listUsersByCategory = async (
     { request, response } : { request: any, response: any}) => {
+      var categories = GetAllCategories();
+      
       var users = await GetAllUsers();
       response.body = { users: users }
       response.status = 200;
